@@ -30,3 +30,4 @@ class ScenarioResult(BaseModel):
     reductions: ReductionOutput
     costPerTon: CostOutput
     summary: str
+
