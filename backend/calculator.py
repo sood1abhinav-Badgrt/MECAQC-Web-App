@@ -16,8 +16,7 @@ def calculateScenario(inputScenario):
         "CO2": CO2Baseline
     }   
 
-   
-    #timeFactor = inputScenario.timelineYears/ 10 #Choose 10 as a standard timeline base
+
 
     '''
     Right now we assume that each technology is stacked on each other
