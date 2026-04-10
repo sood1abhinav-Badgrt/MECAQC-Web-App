@@ -9,15 +9,14 @@ class ScenarioInput(BaseModel):
     timelineYears: int
 
 class ReductionOutput(BaseModel):
-    SO2TonsPerYear:float
-    NOxTonsPerYear:float
-    VOCTonsPerYear:float
-    CO2TonsPerYear:float
-    PMTonsPerYear:float
+    SO2ChangePerYear: float
+    NOxChangePerYear: float
+    PM25ChangePerYear: float
+    VOCChangePerYear: float
+    CO2ChangePerYear: float
 
 class CostOutput(BaseModel):
     totalAnnualCost: float
-
 
 class ScenarioResult(BaseModel):
     state: str
