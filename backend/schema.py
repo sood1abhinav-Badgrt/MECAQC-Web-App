@@ -1,14 +1,11 @@
 from pydantic import BaseModel
 from typing import List
 
-class TechnologyInput(BaseModel):
-    name: str
-    scalePercent: float 
 
 class ScenarioInput(BaseModel):
     state: str
-    sector: str
-    technologies: List[TechnologyInput]
+    scenario: str
+    coveragePercent: float
     timelineYears: int
 
 class ReductionOutput(BaseModel):
@@ -16,18 +13,18 @@ class ReductionOutput(BaseModel):
     NOxTonsPerYear:float
     VOCTonsPerYear:float
     CO2TonsPerYear:float
+    PMTonsPerYear:float
 
 class CostOutput(BaseModel):
-    SO2: float
-    NOx: float
-    VOC: float
-    CO2: float
+    totalAnnualCost: float
+
 
 class ScenarioResult(BaseModel):
     state: str
-    sector: str
+    scenario: str
     timelineYears: int
     reductions: ReductionOutput
-    costPerTon: CostOutput
+    cost: CostOutput
+    netBenefits: float
     summary: str
 
