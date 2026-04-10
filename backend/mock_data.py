@@ -1,21 +1,38 @@
 #Placeholder for data to test work
-baselineEmissions = {
-    "electricity": {"SO2": 12000, "NOx": 8000, "VOC": 1500, "CO2": 26000000},
-    "transportation": {"SO2": 500, "NOx": 14000, "VOC": 9000, "CO2": 18000000},
-    "industrial": {"SO2": 7000, "NOx": 6000, "VOC": 5000, "CO2": 12000000},
-    "areaSources": {"SO2": 300, "NOx": 1200, "VOC": 11000, "CO2": 2000000}
+baselineEmissions ={
+    "SO2": 12000,   # tons/year (from CAMPD 2020)
+    "NOx": 8000,
+    "PM25": 2000,
+    "VOC": 1500,
+    "CO2": 26000000
+}
+scrubberConstants = {
+    "SDA": {"removalEfficiency": 0.95},    # plants that produce 50-100MW of electricty
+    "wetScrubber": {"removalEfficiency": 0.98},  # plants that produce 100MW+ of electricty
+    "heatRatePenalty": 0.0163     # 1.63% increases co-pollutants
 }
 
-technologyEffectiveness = {
-    "coal_to_renewables": {"SO2": 0.85, "NOx": 0.55, "VOC": 0.10, "CO2": 0.90},
-    "electric_vehicles": {"SO2": 0.05, "NOx": 0.60, "VOC": 0.45, "CO2": 0.70},
-    "thermal_oxidizers": {"SO2": 0.00, "NOx": 0.05, "VOC": 0.80, "CO2": 0.02},
-    "air_fuel_ratio_adjustment": {"SO2": 0.00, "NOx": 0.40, "VOC": 0.10, "CO2": 0.08}
+gasConstants = {
+    "heatRateNG": 7.649,        # MMBtu/MWh
+    "emissionRates": {           # lb/MMBtu
+        "SO2": 0.001,
+        "NOx": 0.1,
+        "PM25": 0.005,
+        "VOC": 0.005,
+        "CO2": 116.9
+    },
+    "methaneLeakageRate": 0.023,
+    "methaneGWP": 84
 }
 
-costPerTonDefaults = {
-    "SO2": 820,
-    "NOx": 1100,
+renewableConstants = {
+    "emissionReductionRate": 1.0   # 100% reduction in direct emissions
+}
+
+benefitPerTon = {
+    "SO2": 38000,
+    "NOx": 7600,
+    "PM25": 38000,
     "VOC": 950,
-    "CO2": 42
+    "CO2": 51
 }
