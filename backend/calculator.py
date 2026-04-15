@@ -26,13 +26,47 @@ def calculateAC(input):
     deltaEmissionsCO2 = (input.baselineCO2) * heatRatePenalty
     deltaEmissionsVOC = (input.baselineVOC) * heatRatePenalty 
 
-    return ReductionOutput(
+    reductionOutputAC = ReductionOutput(
         SO2ChangePerYear = deltaEmissionsSO2,
         NOxChangePerYear = -deltaEmissionsNOx,
         PM25ChangePerYear = deltaEmissionsPM25,
         CO2ChangePerYear = -deltaEmissionsCO2,
         VOCChangePerYear = -deltaEmissionsVOC
     )
+
+def calcualteGT(input):
+    deltaEmissionsSO2 = input.baselineSO2 - (input.annualGeneration * gasConstants["heatRate"] * gasConstants["emissionRates"]["SO2"]) / 2000
+    deltaEmissionsNOx = input.baselineNOx - (input.annualGeneration * gasConstants["heatRate"] * gasConstants["emissionRates"]["NOx"]) / 2000
+    deltaEmissionsVOC = input.baselineVOC - (input.annualGeneration * gasConstants["heatRate"] * gasConstants["emissionRates"]["VOC"]) / 2000
+    deltaEmissionsPM25 = input.baselinePM25 - (input.annualGeneration * gasConstants["heatRate"] * gasConstants["emissionRates"]["PM25"]) / 2000
+    deltaEmissionsCO2 = input.baselineCO2 - (input.annualGeneration * gasConstants["heatRate"] * gasConstants["emissionRates"]["CO2"]) / 2000           
+    
+    reductionOutputGT = ReductionOutput(
+        SO2ChangePerYear = deltaEmissionsSO2,
+        NOxChangePerYear = deltaEmissionsNOx,
+        PM25ChangePerYear = deltaEmissionsPM25,
+        CO2ChangePerYear = deltaEmissionsCO2,
+        VOCChangePerYear = deltaEmissionsVOC
+    )
+
+def calculateRT(input):
+    deltaEmissionsSO2 = input.baselineSO2
+    deltaEmissionsNOx = input.baselineNOx
+    deltaEmissionsPM25 = input.baselinePM25
+    deltaEmissionsVOC = input.baselineVOC
+    deltaEmissionsCO2 = input.baselineCO2
+
+    reductionOutputRT = ReductionOutput(
+        SO2ChangePerYear = deltaEmissionsSO2,
+        NOxChangePerYear = deltaEmissionsNOx,
+        PM25ChangePerYear = deltaEmissionsPM25,
+        CO2ChangePerYear = deltaEmissionsCO2,
+        VOCChangePerYear = deltaEmissionsVOC
+    )
+
+    
+
+
 
 
 
