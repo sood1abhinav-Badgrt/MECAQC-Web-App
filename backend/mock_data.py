@@ -1,38 +1,68 @@
-#Placeholder for data to test work
-baselineEmissions ={
-    "SO2": 12000,   # tons/year (from CAMPD 2020)
-    "NOx": 8000,
-    "PM25": 2000,
-    "VOC": 1500,
-    "CO2": 26000000
-}
-scrubberConstants = {
-    "SDA": {"removalEfficiency": 0.95},    # plants that produce 50-100MW of electricty
-    "wetScrubber": {"removalEfficiency": 0.98},  # plants that produce 100MW+ of electricty
-    "heatRatePenalty": 0.0163     # 1.63% increases co-pollutants
+# All constants sourced from Wu et al. 2024 and supplementary materials
+# Emission rates from Table S2.2, BPT values from Table S2.5
+
+coalConstants = {
+    "heatRate": 10.62,          # MMBtu/MWh, average for existing uncontrolled coal EGUs
+    "emissionRates": {          # lb/MMBtu, from Table S2.2
+        "SO2": 0.567,
+        "NOx": 0.203,
+        "VOC": 0.003,
+        "PM25": 0.021,
+        "CO2": 208.08
+    }
 }
 
 gasConstants = {
-    "heatRateNG": 7.649,        # MMBtu/MWh
-    "emissionRates": {           # lb/MMBtu
-        "SO2": 0.001,
-        "NOx": 0.1,
-        "PM25": 0.005,
-        "VOC": 0.005,
-        "CO2": 116.9
+    "heatRate": 7.649,          # MMBtu/MWh, EIA average for NGCC plants
+    "emissionRates": {          # lb/MMBtu, from Table S2.2
+        "SO2": 0.00059,
+        "NOx": 0.011,
+        "VOC": 0.0054,
+        "PM25": 0.0079,
+        "CO2": 117.08
+    }
+}
+
+scrubberConstants = {
+    "SDA": {
+        "removalEfficiency": 0.95,      # applies to plants 50-100 MW
+        "capacityThresholdMin": 50,
+        "capacityThresholdMax": 100
     },
-    "methaneLeakageRate": 0.023,
-    "methaneGWP": 84
+    "wetScrubber": {
+        "removalEfficiency": 0.98,      # applies to plants >100 MW
+        "capacityThresholdMin": 100
+    },
+    "heatRatePenalty": 0.0163           # 1.63% increase in all co-pollutant emissions
 }
 
-renewableConstants = {
-    "emissionReductionRate": 1.0   # 100% reduction in direct emissions
+# BPT values in $/ton, from Table S2.5
+# SO2 BPT: health benefits from secondary PM2.5 (SO2 as precursor)
+# NOx BPT: health benefits from secondary PM2.5 and ozone (NOx as precursor)
+# VOC BPT: uniform national value across all states
+# PM25 BPT: health benefits from directly emitted PM2.5
+# SCC: social cost of carbon, nationally uniform, $/ton CO2
+bptByState = {
+    "AL": {"SO2": 0,      "NOx": 59400, "VOC": 2400, "PM25": 99500,  "SCC": 185},
+    "AR": {"SO2": 78950,  "NOx": 57515, "VOC": 2400, "PM25": 64400,  "SCC": 185},
+    "CT": {"SO2": 0,      "NOx": 81735, "VOC": 2400, "PM25": 0,      "SCC": 185},
+    "IA": {"SO2": 90400,  "NOx": 45020, "VOC": 2400, "PM25": 77500,  "SCC": 185},
+    "IL": {"SO2": 90250,  "NOx": 69850, "VOC": 2400, "PM25": 147800, "SCC": 185},
+    "IN": {"SO2": 109300, "NOx": 77950, "VOC": 2400, "PM25": 127500, "SCC": 185},
+    "KY": {"SO2": 101050, "NOx": 75070, "VOC": 2400, "PM25": 58050,  "SCC": 185},
+    "LA": {"SO2": 70750,  "NOx": 39299, "VOC": 2400, "PM25": 96400,  "SCC": 185},
+    "MD": {"SO2": 290000, "NOx": 92970, "VOC": 2400, "PM25": 328500, "SCC": 185},
+    "MI": {"SO2": 91250,  "NOx": 57955, "VOC": 2400, "PM25": 153850, "SCC": 185},
+    "MN": {"SO2": 81900,  "NOx": 47935, "VOC": 2400, "PM25": 79300,  "SCC": 185},
+    "MO": {"SO2": 80750,  "NOx": 66390, "VOC": 2400, "PM25": 47000,  "SCC": 185},
+    "MS": {"SO2": 0,      "NOx": 50780, "VOC": 2400, "PM25": 81400,  "SCC": 185},
+    "NE": {"SO2": 49550,  "NOx": 29395, "VOC": 2400, "PM25": 23500,  "SCC": 185},
+    "NH": {"SO2": 61200,  "NOx": 46475, "VOC": 2400, "PM25": 0,      "SCC": 185},
+    "NV": {"SO2": 0,      "NOx": 31260, "VOC": 2400, "PM25": 174000, "SCC": 185},
+    "OH": {"SO2": 86750,  "NOx": 88950, "VOC": 2400, "PM25": 134900, "SCC": 185},
+    "OK": {"SO2": 0,      "NOx": 42600, "VOC": 2400, "PM25": 129600, "SCC": 185},
+    "TX": {"SO2": 0,      "NOx": 44455, "VOC": 2400, "PM25": 189000, "SCC": 185},
+    "WY": {"SO2": 27750,  "NOx": 19740, "VOC": 2400, "PM25": 13555,  "SCC": 185},
 }
 
-benefitPerTon = {
-    "SO2": 38000,
-    "NOx": 7600,
-    "PM25": 38000,
-    "VOC": 950,
-    "CO2": 51
-}
+SUPPORTED_STATES = set(bptByState.keys())

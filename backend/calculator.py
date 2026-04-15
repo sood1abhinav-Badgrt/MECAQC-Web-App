@@ -1,5 +1,5 @@
-from mock_data import baselineEmissions, scrubberConstants, gasConstants, renewableConstants, benefitPerTon
-from schema import ReductionOutput, ScenarioResult, CostOutput
+from mock_data import coalConstants, scrubberConstants, gasConstants, bptByState
+from schema import ReductionOutput, ScenarioResult, CostOutput, PlantInput
 
 def calculateScenario(input):
     if input.scenario == "BAU":
@@ -12,21 +12,30 @@ def calculateScenario(input):
         return calculateRT(input)
 
 def calculateAC(input):
-    removalEfficiency = scrubberConstants["wetScrubber"]["removalEfficiency"] #Should be .98 for now
+    if input.capacity >  50 & input.capacity < 100:
+        removalEffiency = .95
+    elif input.capacity == 100:
+        removalEffiency = .98
     heatRatePenalty = scrubberConstants["heatRatePenalty"]
-    deltaEmissionsSO2 = (baselineEmissions["SO2"]) * removalEfficiency * (input.coveragePercent / 100)
-    deltaEmissionsPM = (baselineEmissions["PM25"]) * removalEfficiency * (input.coveragePercent / 100)
+
+    deltaEmissionsSO2 = (input.baselineSO2) * removalEfficiency 
+    deltaEmissionsPM25 = (input.baselinePM25) * removalEfficiency 
 
     #Co-Pollutants
-    deltaEmissionsNOx = (baselineEmissions["NOx"]) * heatRatePenalty * (input.coveragePercent / 100)
-    deltaEmissionsCO2 = (baselineEmissions["CO2"]) * heatRatePenalty * (input.coveragePercent / 100)
+    deltaEmissionsNOx = (input.baselineNOx) * heatRatePenalty 
+    deltaEmissionsCO2 = (input.baselineCO2) * heatRatePenalty
+    deltaEmissionsVOC = (input.baselineVOC) * heatRatePenalty 
 
     return ReductionOutput(
         SO2ChangePerYear = deltaEmissionsSO2,
         NOxChangePerYear = -deltaEmissionsNOx,
-        PM25ChangePerYear = deltaEmissionsPM,
+        PM25ChangePerYear = deltaEmissionsPM25,
         CO2ChangePerYear = -deltaEmissionsCO2,
-        VOCChangePerYear = 0.0
+        VOCChangePerYear = -deltaEmissionsVOC
     )
+
+
+
+
 
 
