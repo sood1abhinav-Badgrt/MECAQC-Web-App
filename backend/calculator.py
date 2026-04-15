@@ -34,6 +34,21 @@ def calculateAC(input):
         VOCChangePerYear = -deltaEmissionsVOC
     )
 
+    #Calculating Benefits
+    state = input.state
+    netBenefits = 0
+    netBenefits += (bptByState[state]["SO2"] * reductionOutputAC.SO2ChangePerYear)
+    netBenefits += (bptByState[state]["CO2"] * reductionOutputAC.CO2ChangePerYear)
+    netBenefits += (bptByState[state]["NOx"] * reductionOutputAC.NOxChangePerYear)
+    netBenefits += (bptByState[state]["PM25"] * reductionOutputAC.PM25ChangePerYear)
+    netBenefits += (bptByState[state]["VOC"] * reductionOutputAC.VOCChangePerYear)
+
+    #Total Annual Cost for switching to Add on Control
+    costControlSO2 = 
+    tacAC = ]
+
+    netBenefits = netBenefits - 
+
 def calcualteGT(input):
     deltaEmissionsSO2 = input.baselineSO2 - (input.annualGeneration * gasConstants["heatRate"] * gasConstants["emissionRates"]["SO2"]) / 2000
     deltaEmissionsNOx = input.baselineNOx - (input.annualGeneration * gasConstants["heatRate"] * gasConstants["emissionRates"]["NOx"]) / 2000
@@ -64,7 +79,9 @@ def calculateRT(input):
         VOCChangePerYear = deltaEmissionsVOC
     )
 
-    
+
+
+
 
 
 
