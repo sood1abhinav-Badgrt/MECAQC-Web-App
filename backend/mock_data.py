@@ -1,5 +1,6 @@
-# All constants sourced from Wu et al. 2024 and supplementary materials
+# All constants sourced from Wu et al. 2024, supplementary materials, and Tracey Holloway control table
 # Emission rates from Table S2.2, BPT values from Table S2.5
+# Control efficiencies: SO2 from Wu et al. 2024, NOx and PM25 from Holloway control table (upper bounds)
 
 coalConstants = {
     "heatRate": 10.62,          # MMBtu/MWh, average for existing uncontrolled coal EGUs
@@ -23,17 +24,52 @@ gasConstants = {
     }
 }
 
-scrubberConstants = {
-    "SDA": {
-        "removalEfficiency": 0.95,      # applies to plants 50-100 MW
-        "capacityThresholdMin": 50,
-        "capacityThresholdMax": 100
+# SO2 controls from Wu et al. 2024
+# NOx and PM25 controls from Holloway control table, upper bound removal efficiencies
+# heatRatePenalty applies to all co-pollutants in SO2 controls per Wu et al. 2024
+controlConstants = {
+    "SO2": {
+        "wetFGD": {
+            "removalEfficiency": 0.98,      # Wu et al. 2024, MRC
+            "type": "MRC",
+            "targetPollutant": "SO2"
+        },
+        "dryFGD": {
+            "removalEfficiency": 0.90,      # Wu et al. 2024, MRC
+            "type": "MRC",
+            "targetPollutant": "SO2"
+        },
+        "SDA": {
+            "removalEfficiency": 0.95,      # Wu et al. 2024, LCC
+            "type": "LCC",
+            "targetPollutant": "SO2"
+        },
     },
-    "wetScrubber": {
-        "removalEfficiency": 0.98,      # applies to plants >100 MW
-        "capacityThresholdMin": 100
+    "NOx": {
+        "SCR": {
+            "removalEfficiency": 0.90,      # Holloway table, upper bound, LCC
+            "type": "LCC",
+            "targetPollutant": "NOx"
+        },
+        "SNCR": {
+            "removalEfficiency": 0.55,      # Holloway table, upper bound, MRC
+            "type": "MRC",
+            "targetPollutant": "NOx"
+        },
     },
-    "heatRatePenalty": 0.0163           # 1.63% increase in all co-pollutant emissions
+    "PM25": {
+        "ESP": {
+            "removalEfficiency": 0.95,      # Holloway table, upper bound, LCC
+            "type": "LCC",
+            "targetPollutant": "PM25"
+        },
+        "fabricFilter": {
+            "removalEfficiency": 0.99,      # Holloway table, upper bound, MRC
+            "type": "MRC",
+            "targetPollutant": "PM25"
+        },
+    },
+    "heatRatePenalty": 0.0163               # 1.63% co-pollutant increase, Wu et al. 2024
 }
 
 # BPT values in $/ton, from Table S2.5
