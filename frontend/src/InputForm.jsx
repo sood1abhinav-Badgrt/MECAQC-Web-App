@@ -36,69 +36,60 @@ function InputForm()
                 baselineCO2: Number(formData.baselineCO2),
                 }
             )
-        }
-    )
+        })
 
-  const data = await response.json()
-  console.log(data)
+        const data = await response.json()
+        console.log(data)
     }
 
     return (
-        <form>
+        <form onSubmit ={handleSubmit}>
             <input
                 name="state"
                 value={formData.state}
                 onChange={handleChange}
-                onSubmit ={handleSubmit}
                 placeholder="e.g. WI"
             />
             <input
                 name = "capacity"
                 value={formData.capacity}
                 onChange={handleChange}
-                onSubmit ={handleSubmit}
                 placeholder="e.g. 600 MW"
             />
             <input
                 name = "annualGeneration"
                 value={formData.annualGeneration}
                 onChange={handleChange}
-                onSubmit ={handleSubmit}
                 placeholder="e.g. 3,066,000 MWh"
             />
             <input
                 name = "baselineSO2"
                 value={formData.baselineSO2}
                 onChange={handleChange}
-                onSubmit ={handleSubmit}
                 placeholder="e.g. 11,000 MW"
             />
             <input
                 name = "baselineNOx"
                 value={formData.baselineNOx}
                 onChange={handleChange}
-                onSubmit ={handleSubmit}
                 placeholder="e.g. 4,800 MW"
             />
             <input
                 name = "baselinePM25"
                 value={formData.baselinePM25}
                 onChange={handleChange}
-                onSubmit ={handleSubmit}
                 placeholder="e.g. 820 MW"
             />
             <input
                 name = "baselineVOC"
                 value={formData.baselineVOC}
                 onChange={handleChange}
-                onSubmit ={handleSubmit}
                 placeholder="e.g. 160 MW"
             />
             <input
                 name = "baselineCO2"
                 value={formData.baselineCO2}
                 onChange={handleChange}
-                onSubmit ={handleSubmit}
                 placeholder="e.g. 2,820,000 MW"
             />
 
