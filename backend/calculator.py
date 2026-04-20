@@ -1,5 +1,5 @@
 from mock_data import coalConstants, gasConstants, controlConstants, bptByState, SUPPORTED_STATES
-from schemas import ReductionOutput, ScenarioResult, CostOutput, PlantInput, AllScenariosResult
+from schema import ReductionOutput, ScenarioResult, CostOutput, PlantInput, AllScenariosResult
 
 def calculateAllScenarios(input: PlantInput) -> AllScenariosResult:
     if input.state not in SUPPORTED_STATES:

@@ -1,4 +1,4 @@
-from schemas import PlantInput, AllScenariosResult
+from schema import PlantInput, AllScenariosResult
 from fastapi import APIRouter
 from calculator import calculateAllScenarios
 
