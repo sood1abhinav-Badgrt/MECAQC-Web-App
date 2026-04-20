@@ -1,8 +1,8 @@
-from schema import ScenarioInput, ScenarioResult, ReductionOutput, CostOutput
-from fastapi import APIRouter, Body
-from calculator import calculateScenario
+from schemas import PlantInput, AllScenariosResult
+from fastapi import APIRouter
+from calculator import calculateAllScenarios
 
 router = APIRouter()
-@router.post("/scenario/run", response_model=ScenarioResult)
-def runScenario(inputData: ScenarioInput = Body()):
-    return calculateScenario(inputData)
+@router.post("/scenario/run", response_model=AllScenariosResult)
+def runScenario(inputData: PlantInput):
+    return calculateAllScenarios(inputData)

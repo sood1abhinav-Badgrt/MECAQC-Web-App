@@ -9,7 +9,7 @@ def calculateAllScenarios(input: PlantInput) -> AllScenariosResult:
         bau = calculateBAU(input),
         ac = calculateAC(input),
         gt = calculateGT(input),
-        rt=calculateRT(input)
+        rt = calculateRT(input)
     )
 
 def calculateNetBenefits(reductions: ReductionOutput, state: str, tac: float) -> float:
