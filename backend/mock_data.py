@@ -3,7 +3,6 @@
 # Control efficiencies: SO2 from Wu et al. 2024, NOx and PM25 from Holloway control table (upper bounds)
 
 # Nationally uniform
-HR_NG = 7.649                # MMBtu/MWh — EIA NGCC heat rate
 HEAT_RATE_PENALTY = 0.0163   # 1.63% — applied to AC co-pollutants
 DISCOUNT_RATE = 0.07         # 7%
 ASSET_LIFE = 20              # years
@@ -24,14 +23,6 @@ OM_NG_VAR      = 3.37    # $/MWh
 OM_SOLAR_FIXED = 22.02   # $/kW/yr
 OM_WIND_FIXED  = 39.55   # $/kW/yr
 
-# Natural gas emission rates (lb/MMBtu)
-ER_NG = {
-    "so2":  0.0001,
-    "nox":  0.1,
-    "pm25": 0.0076,
-    "voc":  0.0021,
-    "co2":  116.9,   # lb/MMBtu
-}
 
 # Coal O&M and fuel — state-specific in real data
 # For now use national averages

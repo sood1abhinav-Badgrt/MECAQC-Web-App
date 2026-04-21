@@ -24,11 +24,12 @@ def calculateNetBenefits(reductions: ReductionOutput, state: str, tac: float) ->
 
 def calculateBAU(input: PlantInput) -> ScenarioResult:
 
-
     #Calculating the cost for the business as usual approach
     tacBAU = 0.0
 
-    tacBAU = (OM_COAL_FIXED * input.capacity) + (FUEL_COAL * input.heatInput)
+    OMCost = OM_COAL_FIXED * input.capacity * 1000
+    fuelCost = FUEL_COAL + input.heatInput
+    tacBAU = OMCost + fuelCost
 
     reductions = ReductionOutput(
         SO2ChangePerYear=0.0,
