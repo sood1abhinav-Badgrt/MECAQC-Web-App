@@ -104,6 +104,16 @@ controlConstants = {
     "heatRatePenalty": 0.0163               # 1.63% co-pollutant increase, Wu et al. 2024
 }
 
+CAP_SCRUBBER= {
+    "wetFGD": 700, # ($/kW)
+    "SDA": 350 # ($/kW)
+}
+
+OM_SCRUBBER_FIXED = {
+    "wetFGD" : 22, #($/kW/yr)
+    "SDA": 14 #($/kW/yr)
+}
+
 # BPT values in $/ton, from Table S2.5
 # SO2 BPT: health benefits from secondary PM2.5 (SO2 as precursor)
 # NOx BPT: health benefits from secondary PM2.5 and ozone (NOx as precursor)
