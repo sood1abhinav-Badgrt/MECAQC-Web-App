@@ -2,6 +2,47 @@
 # Emission rates from Table S2.2, BPT values from Table S2.5
 # Control efficiencies: SO2 from Wu et al. 2024, NOx and PM25 from Holloway control table (upper bounds)
 
+# Nationally uniform
+HR_NG = 7.649                # MMBtu/MWh — EIA NGCC heat rate
+HEAT_RATE_PENALTY = 0.0163   # 1.63% — applied to AC co-pollutants
+DISCOUNT_RATE = 0.07         # 7%
+ASSET_LIFE = 20              # years
+ANNUALIZATION = 0.07 / (1 - (1.07 ** -20))  # = 0.09439
+
+SCC_CO2 = 185.0              # $/ton — Social Cost of Carbon
+BPT_VOC = 2400.0             # $/ton — nationally uniform
+
+# Capital costs ($/kW) — 2020 EIA
+CAP_NG    = 1084.0
+CAP_SOLAR = 1331.0
+CAP_WIND  = 1473.0
+
+# O&M costs
+OM_COAL_FIXED  = 29.15   # $/kW/yr
+OM_NG_FIXED    = 12.15   # $/kW/yr
+OM_NG_VAR      = 3.37    # $/MWh
+OM_SOLAR_FIXED = 22.02   # $/kW/yr
+OM_WIND_FIXED  = 39.55   # $/kW/yr
+
+# Natural gas emission rates (lb/MMBtu)
+ER_NG = {
+    "so2":  0.0001,
+    "nox":  0.1,
+    "pm25": 0.0076,
+    "voc":  0.0021,
+    "co2":  116.9,   # lb/MMBtu
+}
+
+# Coal O&M and fuel — state-specific in real data
+# For now use national averages
+FUEL_COAL = 2.21    # $/MMBtu — 2020 national average
+FUEL_NG   = 2.39    # $/MMBtu — 2020 national average
+
+# AC scrubber control efficiency
+ETA_SDA         = 0.95   # spray dryer absorber (50–100 MW)
+ETA_WET_SCRUBBER = 0.98  # wet scrubber (>100 MW)
+
+
 coalConstants = {
     "heatRate": 10.62,          # MMBtu/MWh, average for existing uncontrolled coal EGUs
     "emissionRates": {          # lb/MMBtu, from Table S2.2
@@ -100,5 +141,7 @@ bptByState = {
     "TX": {"SO2": 0,      "NOx": 44455, "VOC": 2400, "PM25": 189000, "SCC": 185},
     "WY": {"SO2": 27750,  "NOx": 19740, "VOC": 2400, "PM25": 13555,  "SCC": 185},
 }
+
+
 
 SUPPORTED_STATES = set(bptByState.keys())

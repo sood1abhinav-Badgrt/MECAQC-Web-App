@@ -1,15 +1,15 @@
 from pydantic import BaseModel
-from typing import List
 
 class PlantInput(BaseModel):
     state: str
-    capacity: int #MW
-    annualGeneration: float #MWh
-    baselineSO2: float #tons/yr emissions
-    baselineNOx: float #tons/yr emissions
-    baselinePM25: float #tons/yr emissions
-    baselineVOC: float #tons/yr emissions
-    baselineCO2: float #tons/yr emissions
+    capacity: int           # MW
+    annualGeneration: float # MWh
+    heatInput: float        # MMBtu/yr
+    baselineSO2: float      # tons/yr
+    baselineNOx: float      # tons/yr
+    baselinePM25: float     # tons/yr
+    baselineVOC: float      # tons/yr
+    baselineCO2: float      # tons/yr
 
 class ReductionOutput(BaseModel):
     SO2ChangePerYear: float
@@ -18,18 +18,18 @@ class ReductionOutput(BaseModel):
     VOCChangePerYear: float
     CO2ChangePerYear: float
 
-class CostOutput(BaseModel):
-    totalAnnualCost: float
+class NetBenefitOutput(BaseModel):
+    totalBenefit: float      # Σ(BPT × Δe)
+    totalAnnualCost: float   # TAC
+    netBenefit: float        # totalBenefit - totalAnnualCost
 
 class ScenarioResult(BaseModel):
     scenario: str
     reductions: ReductionOutput
-    cost: CostOutput
-    netBenefits: float
+    netBenefits: NetBenefitOutput  # replaces both CostOutput and float
 
 class AllScenariosResult(BaseModel):
     bau: ScenarioResult
     ac: ScenarioResult
     gt: ScenarioResult
     rt: ScenarioResult
-
