@@ -50,6 +50,7 @@ def calculateBAU(input: PlantInput) -> ScenarioResult:
     )
 
 def calculateAC(input: PlantInput) -> ScenarioResult:
+    
     # Auto-assign scrubber by capacity per Wu et al. 2024
     if 50 <= input.capacity <= 100:
         scrubberType = "SDA"
