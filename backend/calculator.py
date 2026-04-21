@@ -1,5 +1,5 @@
-from mock_data import coalConstants, gasConstants, controlConstants, bptByState, SUPPORTED_STATES
-from schema import ReductionOutput, ScenarioResult, CostOutput, PlantInput, AllScenariosResult
+from mock_data import coalConstants, gasConstants, controlConstants, bptByState, SUPPORTED_STATES, OM_COAL_FIXED, FUEL_COAL
+from schema import PlantInput, ReductionOutput, NetBenefitOutput, ScenarioResult, AllScenariosResult
 
 def calculateAllScenarios(input: PlantInput) -> AllScenariosResult:
     if input.state not in SUPPORTED_STATES:
@@ -23,6 +23,13 @@ def calculateNetBenefits(reductions: ReductionOutput, state: str, tac: float) ->
     return benefits - tac
 
 def calculateBAU(input: PlantInput) -> ScenarioResult:
+
+
+    #Calculating the cost for the business as usual approach
+    tacBAU = 0.0
+
+    tacBAU = (OM_COAL_FIXED * input.capacity) + (FUEL_COAL * input.heatInput)
+
     reductions = ReductionOutput(
         SO2ChangePerYear=0.0,
         NOxChangePerYear=0.0,
@@ -31,12 +38,14 @@ def calculateBAU(input: PlantInput) -> ScenarioResult:
         CO2ChangePerYear=0.0
     )
 
-    tac = 0.0
     return ScenarioResult(
         scenario="BAU",
         reductions=reductions,
-        cost=CostOutput(totalAnnualCost=tac),
-        netBenefits=0.0
+        netBenefits = NetBenefitOutput(
+            totalBenefit = 0.0,
+            totalAnnualCost = tacBAU, 
+            netBenefit = -tacBAU
+        )
     )
 
 def calculateAC(input: PlantInput) -> ScenarioResult:
