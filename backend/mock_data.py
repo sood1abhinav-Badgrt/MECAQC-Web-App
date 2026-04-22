@@ -1,125 +1,153 @@
-# All constants sourced from Wu et al. 2024, supplementary materials, and Tracey Holloway control table
-# Emission rates from Table S2.2, BPT values from Table S2.5
-# Control efficiencies: SO2 from Wu et al. 2024, NOx and PM25 from Holloway control table (upper bounds)
+# All constants sourced from Wu et al. 2024 (SI_XW_2020.pdf) and MECAQC zip.
+# Table references are to SI_XW_2020.pdf unless otherwise noted.
+# NOx and PM25 control efficiencies from Holloway control table (not in paper).
 
-# Nationally uniform
-HEAT_RATE_PENALTY = 0.0163   # 1.63% — applied to AC co-pollutants
-DISCOUNT_RATE = 0.07         # 7%
-ASSET_LIFE = 20              # years
-ANNUALIZATION = 0.07 / (1 - (1.07 ** -20))  # = 0.09439
+# ── Nationally uniform ────────────────────────────────────────────────────────
 
-SCC_CO2 = 185.0              # $/ton — Social Cost of Carbon
-BPT_VOC = 2400.0             # $/ton — nationally uniform
+HEAT_RATE_PENALTY = 0.0163   # 1.63% — Table S2.1, EPA IPM v6 Ch. 5
+DISCOUNT_RATE     = 0.07     # 7% — Equation S2.5
+ASSET_LIFE        = 20       # years — Equation S2.5
+ANNUALIZATION     = 0.07 / (1 - (1.07 ** -20))  # capital recovery factor ≈ 0.09439
 
-# Capital costs ($/kW) — 2020 EIA
-CAP_NG    = 1084.0
-CAP_SOLAR = 1331.0
-CAP_WIND  = 1473.0
+SCC_CO2 = 185.0   # $/ton — Table S2.5
+BPT_VOC = 2400.0  # $/ton — Table S2.5
 
-# O&M costs
-OM_COAL_FIXED  = 29.15   # $/kW/yr
-OM_NG_FIXED    = 12.15   # $/kW/yr
-OM_NG_VAR      = 3.37    # $/MWh
-OM_SOLAR_FIXED = 22.02   # $/kW/yr
-OM_WIND_FIXED  = 39.55   # $/kW/yr
+# ── Capital costs ($/kW) — Table S2.3, EIA Capital Cost Estimates 2016 ───────
 
+CAP_NG    = 1046.0    # $/kW — NGCC capital cost
+CAP_SOLAR = 2721.0    # $/kW — utility-scale solar PV
+CAP_WIND  = 2008.0    # $/kW — onshore wind
 
-# Coal O&M and fuel — state-specific in real data
-# For now use national averages
-FUEL_COAL = 2.21    # $/MMBtu — 2020 national average
-FUEL_NG   = 2.39    # $/MMBtu — 2020 national average
+# ── O&M costs — Table S2.3, EIA Generating Unit Annual Capital 2019 ──────────
 
-# AC scrubber control efficiency
-ETA_SDA         = 0.95   # spray dryer absorber (50–100 MW)
-ETA_WET_SCRUBBER = 0.98  # wet scrubber (>100 MW)
+# BAU coal — two rates by plant size per Table S2.3
+OM_COAL_FIXED_SMALL = 46.53   # $/kW/yr — capacity < 500 MW
+OM_COAL_FIXED_LARGE = 35.80   # $/kW/yr — capacity >= 500 MW
+OM_COAL_VAR         =  1.87   # $/MWh
 
+# GT gas
+OM_NG_FIXED = 11.77   # $/kW/yr — NGCC fixed O&M
+OM_NG_VAR   =  3.70   # $/MWh   — NGCC variable O&M
+
+# RT renewables
+OM_SOLAR_FIXED = 25.50   # $/kW/yr — solar PV fixed O&M
+OM_WIND_FIXED  = 42.40   # $/kW/yr — onshore wind fixed O&M
+
+# ── Fuel costs — Table S2.3, EIA Table 7.4 ───────────────────────────────────
+
+FUEL_COAL = 2.11   # $/MMBtu — 2020 coal price (bituminous)
+FUEL_NG   = 2.40   # $/MMBtu — 2020 natural gas price
+
+# ── Methane leak constants — Equations S2.11, S2.12 ──────────────────────────
+
+NG_HEAT_CONTENT   = 0.0366   # MMBtu/m³  — EIA, SI footnote 6
+METHANE_DENSITY   = 0.667    # kg/m³     — IPCC, SI footnote 7
+METHANE_LEAK_RATE = 0.015    # 1.5%      — Alvarez et al. 2018, SI footnote 9
+                              #             confirmed by zip sheet name
+                              #             "consider methane leak (1.5)"
+CH4_GWP_20YR      = 84       # dimensionless — IPCC AR5, SI footnotes 10-11
+                              #                 confirmed by back-calculation
+                              #                 from zip CH4_CO2 equi column
+
+# ── Coal emission constants — Table S2.2 ─────────────────────────────────────
 
 coalConstants = {
-    "heatRate": 10.62,          # MMBtu/MWh, average for existing uncontrolled coal EGUs
-    "emissionRates": {          # lb/MMBtu, from Table S2.2
-        "SO2": 0.567,
-        "NOx": 0.203,
-        "VOC": 0.003,
+    "heatRate": 10.62,        # MMBtu/MWh — existing uncontrolled coal EGUs
+    "emissionRates": {        # lb/MMBtu
+        "SO2":  0.567,
+        "NOx":  0.203,
+        "VOC":  0.003,
         "PM25": 0.021,
-        "CO2": 208.08
+        "CO2":  208.08        # /2000 = 0.10404 short tons/MMBtu ✓ CAMPD CO2 Rate
     }
 }
+
+# ── Gas emission constants — Table S2.2 ──────────────────────────────────────
 
 gasConstants = {
-    "heatRate": 7.649,          # MMBtu/MWh, EIA average for NGCC plants
-    "emissionRates": {          # lb/MMBtu, from Table S2.2
-        "SO2": 0.00059,
-        "NOx": 0.011,
-        "VOC": 0.0054,
+    "heatRate": 7.649,        # MMBtu/MWh — EIA Table 8.2, SI Equation S2.4 text
+                              # Note: Table S2.2 shows 7.69 but S2.4 text says 7.649
+                              # Using 7.649 per equation text
+    "emissionRates": {        # lb/MMBtu
+        "SO2":  0.00059,
+        "NOx":  0.011,
+        "VOC":  0.0054,
         "PM25": 0.0079,
-        "CO2": 117.08
+        "CO2":  117.08
     }
 }
 
-# SO2 controls from Wu et al. 2024
-# NOx and PM25 controls from Holloway control table, upper bound removal efficiencies
-# heatRatePenalty applies to all co-pollutants in SO2 controls per Wu et al. 2024
+# ── Control efficiencies ──────────────────────────────────────────────────────
+# SO2: Table S2.1, EPA IPM v6
+# NOx, PM25: Holloway control table (upper bounds) — not in paper
+
 controlConstants = {
     "SO2": {
         "wetFGD": {
-            "removalEfficiency": 0.98,      # Wu et al. 2024, MRC
+            "removalEfficiency": 0.98,   # >100 MW — Table S2.1
             "type": "MRC",
             "targetPollutant": "SO2"
         },
         "dryFGD": {
-            "removalEfficiency": 0.90,      # Wu et al. 2024, MRC
+            "removalEfficiency": 0.90,   # Table S2.1
             "type": "MRC",
             "targetPollutant": "SO2"
         },
         "SDA": {
-            "removalEfficiency": 0.95,      # Wu et al. 2024, LCC
+            "removalEfficiency": 0.95,   # 50-100 MW — Table S2.1
             "type": "LCC",
             "targetPollutant": "SO2"
         },
     },
     "NOx": {
         "SCR": {
-            "removalEfficiency": 0.90,      # Holloway table, upper bound, LCC
+            "removalEfficiency": 0.90,   # Holloway table, upper bound
             "type": "LCC",
             "targetPollutant": "NOx"
         },
         "SNCR": {
-            "removalEfficiency": 0.55,      # Holloway table, upper bound, MRC
+            "removalEfficiency": 0.55,   # Holloway table, upper bound
             "type": "MRC",
             "targetPollutant": "NOx"
         },
     },
     "PM25": {
         "ESP": {
-            "removalEfficiency": 0.95,      # Holloway table, upper bound, LCC
+            "removalEfficiency": 0.95,   # Holloway table, upper bound
             "type": "LCC",
             "targetPollutant": "PM25"
         },
         "fabricFilter": {
-            "removalEfficiency": 0.99,      # Holloway table, upper bound, MRC
+            "removalEfficiency": 0.99,   # Holloway table, upper bound
             "type": "MRC",
             "targetPollutant": "PM25"
         },
     },
-    "heatRatePenalty": 0.0163               # 1.63% co-pollutant increase, Wu et al. 2024
+    "heatRatePenalty": 0.0163            # 1.63% — Table S2.1
 }
 
-CAP_SCRUBBER= {
-    "wetFGD": 700, # ($/kW)
-    "SDA": 350 # ($/kW)
+# ── AC scrubber capital and O&M ───────────────────────────────────────────────
+# Source: EPA Control Cost Manual — not in SI_XW_2020.pdf
+# Placeholder until Control Cost Manual equations are implemented
+
+CAP_SCRUBBER = {
+    "wetFGD": 700,   # $/kW
+    "SDA":    350    # $/kW
 }
 
 OM_SCRUBBER_FIXED = {
-    "wetFGD" : 22, #($/kW/yr)
-    "SDA": 14 #($/kW/yr)
+    "wetFGD": 22,    # $/kW/yr
+    "SDA":    14     # $/kw/yr
 }
 
-# BPT values in $/ton, from Table S2.5
-# SO2 BPT: health benefits from secondary PM2.5 (SO2 as precursor)
-# NOx BPT: health benefits from secondary PM2.5 and ozone (NOx as precursor)
-# VOC BPT: uniform national value across all states
-# PM25 BPT: health benefits from directly emitted PM2.5
-# SCC: social cost of carbon, nationally uniform, $/ton CO2
+# ── BPT values — Table S2.5 ──────────────────────────────────────────────────
+# SO2:  health benefits from secondary PM2.5 (SO2 as precursor)
+# NOx:  health benefits from secondary PM2.5 and ozone (NOx as precursor)
+# VOC:  nationally uniform
+# PM25: health benefits from directly emitted PM2.5
+# SCC:  nationally uniform social cost of carbon
+# SO2 = 0 for some states = no monetized secondary PM2.5 pathway (BenMAP result)
+
 bptByState = {
     "AL": {"SO2": 0,      "NOx": 59400, "VOC": 2400, "PM25": 99500,  "SCC": 185},
     "AR": {"SO2": 78950,  "NOx": 57515, "VOC": 2400, "PM25": 64400,  "SCC": 185},
@@ -143,8 +171,15 @@ bptByState = {
     "WY": {"SO2": 27750,  "NOx": 19740, "VOC": 2400, "PM25": 13555,  "SCC": 185},
 }
 
-# Source: EPA eGRID 2020, via uncontrolled_cost_benefits sheet in MECAQC zip
-# Columns: solar%, wind%, CF_NG, CF_solar, CF_wind
+# ── State-specific energy constants — Table S2.4 ──────────────────────────────
+# Source: EPA eGRID 2020, cited in SI footnote 2
+# Confirmed against zip uncontrolled_cost_benefits sheet
+# IL and MO each span two EMM regions in Table S2.4 — zip uses one row per state.
+# Values here match the zip's single row per state.
+# solarPct, windPct: fraction of state utility-scale generation from each source
+# CF_NG, CF_solar, CF_wind: capacity factors (dimensionless)
+# cost_aj_NG, cost_aj_wind, cost_aj_solar: regional cost adjustment factors
+
 stateEnergyConstants = {
     "AL": {"solarPct": 0.0026, "windPct": 0.0,    "CF_NG": 0.648, "CF_solar": 0.243, "CF_wind": 0.147, "cost_aj_NG": 0.93, "cost_aj_wind": 0.96, "cost_aj_solar": 0.89},
     "AR": {"solarPct": 0.005,  "windPct": 0.0,    "CF_NG": 0.623, "CF_solar": 0.257, "CF_wind": 0.147, "cost_aj_NG": 0.93, "cost_aj_wind": 0.96, "cost_aj_solar": 0.89},
@@ -167,7 +202,5 @@ stateEnergyConstants = {
     "TX": {"solarPct": 0.018,  "windPct": 0.1953, "CF_NG": 0.546, "CF_solar": 0.253, "CF_wind": 0.352, "cost_aj_NG": 0.91, "cost_aj_wind": 0.95, "cost_aj_solar": 0.87},
     "WY": {"solarPct": 0.0039, "windPct": 0.1312, "CF_NG": 0.328, "CF_solar": 0.231, "CF_wind": 0.371, "cost_aj_NG": 1.01, "cost_aj_wind": 1.03, "cost_aj_solar": 0.93},
 }
-
-
 
 SUPPORTED_STATES = set(bptByState.keys())
