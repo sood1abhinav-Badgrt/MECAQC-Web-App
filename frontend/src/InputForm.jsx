@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function InputForm()
+function InputForm({ setResults })
 {
     const [formData, setFormData] = useState({
         state: "",
@@ -39,7 +39,7 @@ function InputForm()
         })
 
         const data = await response.json()
-        console.log(data)
+        setResults(data)
     }
 
     return (
