@@ -30,9 +30,15 @@ def calculateBAU(input: PlantInput) -> ScenarioResult:
     #Calculating the cost for the business as usual approach
     tacBAU = 0.0
 
-    OMCost = OM_COAL_FIXED * input.capacity * 1000
-    fuelCost = FUEL_COAL + input.heatInput
-    tacBAU = OMCost + fuelCost
+    om_rate = 0.0
+    if(input.capacity < 500):
+        om_rate = OM_COAL_FIXED_SMALL
+    else:
+        om_rate = OM_COAL_FIXED_LARGE
+
+    om_cost = (om_rate * input.capacity * 1000) + (OM_COAL_VAR * input.annualGeneration)   
+    fuelCost = FUEL_COAL * input.heatInput
+    tacBAU = om_cost + fuelCost     
 
     reductions = ReductionOutput(
         SO2ChangePerYear=0.0,
