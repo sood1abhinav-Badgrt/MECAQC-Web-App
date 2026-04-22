@@ -1,4 +1,4 @@
-from mock_data import coalConstants, gasConstants, controlConstants, bptByState, SUPPORTED_STATES, OM_COAL_FIXED, FUEL_COAL
+from mock_data import coalConstants, gasConstants, controlConstants, bptByState, SUPPORTED_STATES, OM_COAL_FIXED, FUEL_COAL, CAP_SCRUBBER, ANNUALIZATION, OM_SCRUBBER_FIXED
 from schema import PlantInput, ReductionOutput, NetBenefitOutput, ScenarioResult, AllScenariosResult
 
 def calculateAllScenarios(input: PlantInput) -> AllScenariosResult:
@@ -21,6 +21,9 @@ def calculateNetBenefits(reductions: ReductionOutput, state: str, tac: float) ->
     benefits += bpt["VOC"]  * reductions.VOCChangePerYear
     benefits += bpt["SCC"]  * reductions.CO2ChangePerYear
     return benefits - tac
+
+
+
 
 def calculateBAU(input: PlantInput) -> ScenarioResult:
 
@@ -58,6 +61,7 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
     else:
         scrubberType = "wetFGD"
         removalEfficiency = controlConstants["SO2"]["wetFGD"]["removalEfficiency"]
+  
 
     heatRatePenalty = controlConstants["heatRatePenalty"]
 
@@ -83,13 +87,18 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
         CO2ChangePerYear=deltaEmissionsCO2
     )
 
-    tac = 0.0  # placeholder — EPA Control Cost Manual equations to be implemented
+    tacAC = 0.0  # placeholder — EPA Control Cost Manual equations to be implemented
+    CAPEX = CAP_SCRUBBER[scrubberType] * input.capacity * 1000
+    annualCAPEX = CAPEX * ANNUALIZATION
+    OM = OM_SCRUBBER_FIXED * input.capacity * 1000
+    tacAC = annualCAPEX + OM
+
     
     return ScenarioResult(
         scenario="AC",
         reductions=reductions,
-        cost=CostOutput(totalAnnualCost=tac),
-        netBenefits=calculateNetBenefits(reductions, input.state, tac)
+        cost=CostOutput(totalAnnualCost=tacAC),
+        netBenefits=calculateNetBenefits(reductions, input.state, tacAC)
     )
 
 def calculateGT(input: PlantInput) -> ScenarioResult:

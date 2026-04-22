@@ -143,6 +143,31 @@ bptByState = {
     "WY": {"SO2": 27750,  "NOx": 19740, "VOC": 2400, "PM25": 13555,  "SCC": 185},
 }
 
+# Source: EPA eGRID 2020, via uncontrolled_cost_benefits sheet in MECAQC zip
+# Columns: solar%, wind%, CF_NG, CF_solar, CF_wind
+stateEnergyConstants = {
+    "AL": {"solarPct": 0.0026, "windPct": 0.0,    "CF_NG": 0.648, "CF_solar": 0.243, "CF_wind": 0.147, "cost_aj_NG": 0.93, "cost_aj_wind": 0.96, "cost_aj_solar": 0.89},
+    "AR": {"solarPct": 0.005,  "windPct": 0.0,    "CF_NG": 0.623, "CF_solar": 0.257, "CF_wind": 0.147, "cost_aj_NG": 0.93, "cost_aj_wind": 0.96, "cost_aj_solar": 0.89},
+    "CT": {"solarPct": 0.0052, "windPct": 0.0003, "CF_NG": 0.677, "CF_solar": 0.182, "CF_wind": 0.293, "cost_aj_NG": 1.16, "cost_aj_wind": 1.06, "cost_aj_solar": 1.03},
+    "IA": {"solarPct": 0.0004, "windPct": 0.5732, "CF_NG": 0.399, "CF_solar": 0.214, "CF_wind": 0.432, "cost_aj_NG": 0.97, "cost_aj_wind": 1.03, "cost_aj_solar": 0.95},
+    "IL": {"solarPct": 0.0005, "windPct": 0.0936, "CF_NG": 0.41,  "CF_solar": 0.226, "CF_wind": 0.382, "cost_aj_NG": 1.06, "cost_aj_wind": 1.04, "cost_aj_solar": 1.05},
+    "IN": {"solarPct": 0.004,  "windPct": 0.0698, "CF_NG": 0.742, "CF_solar": 0.201, "CF_wind": 0.33,  "cost_aj_NG": 1.04, "cost_aj_wind": 1.02, "cost_aj_solar": 1.0},
+    "KY": {"solarPct": 0.0007, "windPct": 0.0,    "CF_NG": 0.732, "CF_solar": 0.167, "CF_wind": 0.147, "cost_aj_NG": 0.93, "cost_aj_wind": 0.96, "cost_aj_solar": 0.89},
+    "LA": {"solarPct": 0.0004, "windPct": 0.0,    "CF_NG": 0.639, "CF_solar": 0.241, "CF_wind": 0.147, "cost_aj_NG": 0.93, "cost_aj_wind": 0.96, "cost_aj_solar": 0.89},
+    "MD": {"solarPct": 0.0146, "windPct": 0.0149, "CF_NG": 0.527, "CF_solar": 0.19,  "CF_wind": 0.299, "cost_aj_NG": 1.21, "cost_aj_wind": 1.05, "cost_aj_solar": 1.05},
+    "MI": {"solarPct": 0.0015, "windPct": 0.0632, "CF_NG": 0.587, "CF_solar": 0.212, "CF_wind": 0.322, "cost_aj_NG": 1.0,  "cost_aj_wind": 1.0,  "cost_aj_solar": 0.97},
+    "MN": {"solarPct": 0.0288, "windPct": 0.2093, "CF_NG": 0.32,  "CF_solar": 0.196, "CF_wind": 0.366, "cost_aj_NG": 0.97, "cost_aj_wind": 1.03, "cost_aj_solar": 0.95},
+    "MO": {"solarPct": 0.0014, "windPct": 0.0465, "CF_NG": 0.335, "CF_solar": 0.196, "CF_wind": 0.362, "cost_aj_NG": 1.06, "cost_aj_wind": 1.04, "cost_aj_solar": 1.05},
+    "MS": {"solarPct": 0.0065, "windPct": 0.0,    "CF_NG": 0.665, "CF_solar": 0.227, "CF_wind": 0.147, "cost_aj_NG": 0.93, "cost_aj_wind": 0.96, "cost_aj_solar": 0.89},
+    "NE": {"solarPct": 0.0015, "windPct": 0.248,  "CF_NG": 0.168, "CF_solar": 0.239, "CF_wind": 0.448, "cost_aj_NG": 0.97, "cost_aj_wind": 1.03, "cost_aj_solar": 0.95},
+    "NH": {"solarPct": 0.0002, "windPct": 0.0315, "CF_NG": 0.438, "CF_solar": 0.186, "CF_wind": 0.26,  "cost_aj_NG": 1.16, "cost_aj_wind": 1.06, "cost_aj_solar": 1.03},
+    "NV": {"solarPct": 0.1372, "windPct": 0.0073, "CF_NG": 0.464, "CF_solar": 0.291, "CF_wind": 0.24,  "cost_aj_NG": 1.01, "cost_aj_wind": 1.05, "cost_aj_solar": 0.99},
+    "OH": {"solarPct": 0.0014, "windPct": 0.0189, "CF_NG": 0.813, "CF_solar": 0.219, "CF_wind": 0.328, "cost_aj_NG": 1.04, "cost_aj_wind": 1.02, "cost_aj_solar": 1.0},
+    "OK": {"solarPct": 0.0008, "windPct": 0.3574, "CF_NG": 0.357, "CF_solar": 0.2,   "CF_wind": 0.377, "cost_aj_NG": 0.99, "cost_aj_wind": 1.02, "cost_aj_solar": 0.97},
+    "TX": {"solarPct": 0.018,  "windPct": 0.1953, "CF_NG": 0.546, "CF_solar": 0.253, "CF_wind": 0.352, "cost_aj_NG": 0.91, "cost_aj_wind": 0.95, "cost_aj_solar": 0.87},
+    "WY": {"solarPct": 0.0039, "windPct": 0.1312, "CF_NG": 0.328, "CF_solar": 0.231, "CF_wind": 0.371, "cost_aj_NG": 1.01, "cost_aj_wind": 1.03, "cost_aj_solar": 0.93},
+}
+
 
 
 SUPPORTED_STATES = set(bptByState.keys())
