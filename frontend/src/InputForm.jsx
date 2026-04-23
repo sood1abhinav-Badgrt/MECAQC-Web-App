@@ -19,29 +19,30 @@ function InputForm({ setResults })
     }
 
     async function handleSubmit(e) {
-        e.preventDefault() // stops the browser from refreshing the page
-  
-        const response = await fetch("http://localhost:8000/scenario/run", 
-        {
+        e.preventDefault()
+        try {
+          const response = await fetch("http://localhost:8000/scenario/run", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-                {
-                ...formData,
-                capacity: parseInt(formData.capacity),
-                annualGeneration: Number(formData.annualGeneration),
-                baselineSO2: Number(formData.baselineSO2),
-                baselineNOx: Number(formData.baselineNOx),
-                baselinePM25: Number(formData.baselinePM25),
-                baselineVOC: Number(formData.baselineVOC),
-                baselineCO2: Number(formData.baselineCO2),
-                }
-            )
-        })
-
-        const data = await response.json()
-        setResults(data)
-    }
+            body: JSON.stringify({
+              ...formData,
+              capacity: parseInt(formData.capacity),
+              heatInput: Number(formData.heatInput),
+              annualGeneration: Number(formData.annualGeneration),
+              baselineSO2: Number(formData.baselineSO2),
+              baselineNOx: Number(formData.baselineNOx),
+              baselinePM25: Number(formData.baselinePM25),
+              baselineVOC: Number(formData.baselineVOC),
+              baselineCO2: Number(formData.baselineCO2),
+            })
+          })
+          const data = await response.json()
+          console.log(data)
+          setResults(data)
+        } catch (err) {
+          console.error("Fetch failed:", err)
+        }
+      }
 
     return (
         <form onSubmit ={handleSubmit}>
@@ -66,8 +67,8 @@ function InputForm({ setResults })
             <input
                 name="heatInput"
                 value={formData.heatInput}
-            onChange={handleChange}
-            placeholder="e.g. 1598916 MMBtu/yr"
+                onChange={handleChange}
+                placeholder="e.g. 1598916 MMBtu/yr"
             />
             <input
                 name = "baselineSO2"
