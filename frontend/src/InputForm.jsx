@@ -6,6 +6,7 @@ function InputForm({ setResults })
         state: "",
         capacity: "",
         annualGeneration: "",
+        heatInput: "",
         baselineSO2: "",
         baselineNOx: "",
         baselinePM25: "",
@@ -27,7 +28,7 @@ function InputForm({ setResults })
             body: JSON.stringify(
                 {
                 ...formData,
-                capacity: Number(formData.capacity),
+                capacity: parseInt(formData.capacity),
                 annualGeneration: Number(formData.annualGeneration),
                 baselineSO2: Number(formData.baselineSO2),
                 baselineNOx: Number(formData.baselineNOx),
@@ -61,6 +62,12 @@ function InputForm({ setResults })
                 value={formData.annualGeneration}
                 onChange={handleChange}
                 placeholder="e.g. 3,066,000 MWh"
+            />
+            <input
+                name="heatInput"
+                value={formData.heatInput}
+            onChange={handleChange}
+            placeholder="e.g. 1598916 MMBtu/yr"
             />
             <input
                 name = "baselineSO2"
