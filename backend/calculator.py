@@ -63,10 +63,10 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
     # Auto-assign scrubber by capacity per Wu et al. 2024
     if 50 <= input.capacity <= 100:
         scrubberType = "SDA"
-        removalEfficiency = controlConstants["SO2"]["SDA"]["removalEfficiency"]
+        removalEfficiency = controlConstants["SO2"]["SDA"]["removalEfficiency"] #.95
     else:
         scrubberType = "wetFGD"
-        removalEfficiency = controlConstants["SO2"]["wetFGD"]["removalEfficiency"]
+        removalEfficiency = controlConstants["SO2"]["wetFGD"]["removalEfficiency"] #.98
   
 
     heatRatePenalty = controlConstants["heatRatePenalty"]
@@ -85,6 +85,7 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
     else: #ScrubberType is Wet FGD
         deltaEmissionsVOC  = -(input.baselineVOC  * heatRatePenalty)
 
+
     reductions = ReductionOutput(
         SO2ChangePerYear=deltaEmissionsSO2,
         NOxChangePerYear=deltaEmissionsNOx,
@@ -94,10 +95,8 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
     )
 
     tacAC = 0.0  # placeholder — EPA Control Cost Manual equations to be implemented
-    CAPEX = CAP_SCRUBBER[scrubberType] * input.capacity * 1000
-    annualCAPEX = CAPEX * ANNUALIZATION
-    OM = OM_SCRUBBER_FIXED * input.capacity * 1000
-    tacAC = annualCAPEX + OM
+    costControl = 0.0 # still needs to be implemented
+    tacAC = costControl + (HEAT_RATE_PENALTY * FUEL_COAL * input.heatInput)
 
     
     return ScenarioResult(
@@ -108,29 +107,85 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
     )
 
 def calculateGT(input: PlantInput) -> ScenarioResult:
-    hr  = gasConstants["heatRate"]
-    er  = gasConstants["emissionRates"]
+    ec = stateEnergyConstants[input.state]
 
-    # Delta = what coal emits minus what equivalent gas plant would emit
-    # Positive = reduction, negative = increase
+    # S2.3 — replacement gas capacity (MW)
+    capacityGT = input.annualGeneration / (ec["CF_NG"] * 8760)
+
+    # S2.4 — gas heat input (MMBtu/yr)
+    heatInputNG = gasConstants["heatRate"] * input.annualGeneration
+
+
+
+    # S2.9 — emission reductions (short tons/yr)
+    # Δe = ecoal - (annualGeneration × HR_NG × ER_NG) / 2000
+    # emissions by coal - (annual generation * heatrate of natural gas and emissions rate of natural gas) / 2000
+    deltaEmissionsSO2 = input.baselineSO2 - (input.annualGeneration * gasConstants["heatRate"] * emissionRates["heatRate"]) / 2000
+    deltaEmissionsNOx = input.baselineNOx - (input.annualGeneration * gasConstants["heatRate"] * emissionRates["heatRate"]) / 2000
+    deltaEmissionsPM25 = input.baselinePM25 - (input.annualGeneration * gasConstants["heatRate"] * emissionRates["heatRate"]) / 2000
+    deltaEmissionsVOC = input.baselineVOC - (input.annualGeneration * gasConstants["heatRate"] * emissionRates["heatRate"]) / 2000
+    deltaEmissionsCO2 = input.baselineCO2 - (input.annualGeneration * gasConstants["heatRate"] * emissionRates["heatRate"]) / 2000
+
     reductions = ReductionOutput(
-        SO2ChangePerYear  = input.baselineSO2  - (input.annualGeneration * hr * er["SO2"])  / 2000,
-        NOxChangePerYear  = input.baselineNOx  - (input.annualGeneration * hr * er["NOx"])  / 2000,
-        PM25ChangePerYear = input.baselinePM25 - (input.annualGeneration * hr * er["PM25"]) / 2000,
-        VOCChangePerYear  = input.baselineVOC  - (input.annualGeneration * hr * er["VOC"])  / 2000,
-        CO2ChangePerYear  = input.baselineCO2  - (input.annualGeneration * hr * er["CO2"])  / 2000
+        SO2ChangePerYear = deltaEmissionsSO2
+        NOxChangePerYear = deltaEmissionsNOx
+        PM25ChangePerYear = deltaEmissionsPM25
+        VOCChangePerYear = deltaEmissionsVOC
+        CO2ChangePerYear = deltaEmissionsCO2
     )
 
-    tac = 0.0  # placeholder — GT cost equations to be implemented
+    # S2.11 — methane leak CO2 offset (short tons)
+    co2_offset = (
+        (heatInput_ng / NG_HEAT_CONTENT)
+        * METHANE_DENSITY
+        / 1000
+        * METHANE_LEAK_RATE
+        * CH4_GWP_20YR
+        * 1.1023                     # metric tons → short tons
+    )
+
+    # S2.12 — dollar value of methane offset
+    methane_penalty = co2_offset * SCC_CO2  
+
+    # S2.5 — incremental TAC
+    tacGT = (
+        (CAP_NG * ec["cost_aj_NG"] * capacity_gt * 1000 * ANNUALIZATION)
+        + (OM_NG_FIXED * ec["cost_aj_NG"] * capacity_gt * 1000)
+        + (OM_NG_VAR * input.annualGeneration)
+        + (FUEL_NG * heatInput_ng)
+        - tacBAU
+    )
     
     return ScenarioResult(
         scenario="GT",
         reductions=reductions,
-        cost=CostOutput(totalAnnualCost=tac),
-        netBenefits=calculateNetBenefits(reductions, input.state, tac)
+        cost=CostOutput(totalAnnualCost=tacGT),
+        netBenefits=calculateNetBenefits(reductions, input.state, tacGT)
     )
 
 def calculateRT(input: PlantInput) -> ScenarioResult:
+    ec = = stateEnergyConstants[input.state]
+    solarPCT = ec["SolarPct"]
+    windPCT = ec["windPct"]
+    totalPCT = solarPCT + windPCT
+
+    # S2.6, S2.7 — replacement capacity (MW)
+    # edge case: AL, AR, KY, LA, MS have windPct = 0 → 100% solar
+    if total_pct == 0:
+        capacity_solar = input.annualGeneration / (ec["CF_solar"] * 8760)
+        capacity_wind  = 0.0
+    else:
+        capacity_solar = input.annualGeneration * (solar_pct / total_pct) / (ec["CF_solar"] * 8760)
+        capacity_wind  = input.annualGeneration * (wind_pct  / total_pct) / (ec["CF_wind"]  * 8760)
+
+    tacRT = (
+        (CAP_SOLAR * ec["cost_aj_solar"] * capacity_solar * 1000
+        + CAP_WIND * ec["cost_aj_wind"] * capacity_wind  * 1000) * ANNUALIZATION
+        + (OM_SOLAR_FIXED * capacity_solar * 1000 + OM_WIND_FIXED * capacity_wind * 1000)
+        - tacBAU
+    )
+
+
     # Renewables have zero operational emissions — 100% reduction of all pollutants
     reductions = ReductionOutput(
         SO2ChangePerYear=input.baselineSO2,
@@ -140,11 +195,16 @@ def calculateRT(input: PlantInput) -> ScenarioResult:
         CO2ChangePerYear=input.baselineCO2
     )
 
-    tac = 0.0  # placeholder — RT cost equations to be implemented
+    tacRT = (
+        (CAP_SOLAR * ec["cost_aj_solar"] * capacity_solar * 1000
+        + CAP_WIND * ec["cost_aj_wind"] * capacity_wind  * 1000) * ANNUALIZATION
+        + (OM_SOLAR_FIXED * capacity_solar * 1000 + OM_WIND_FIXED * capacity_wind * 1000)
+        - tacBAU
+    )
 
     return ScenarioResult(
         scenario="RT",
         reductions=reductions,
-        cost=CostOutput(totalAnnualCost=tac),
-        netBenefits=calculateNetBenefits(reductions, input.state, tac)
+        cost=CostOutput(totalAnnualCost=tacRT),
+        netBenefits=calculateNetBenefits(reductions, input.state, tacRT)
     )
