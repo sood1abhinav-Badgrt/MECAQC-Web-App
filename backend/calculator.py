@@ -93,13 +93,9 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
 
 def calculateGT(input: PlantInput) -> ScenarioResult:
     ec = stateEnergyConstants[input.state]
-    tacBAU = calculateBAU(input).netBenefits.totalAnnualCost
 
     # S2.3 — replacement gas capacity (MW)
     capacityGT = input.annualGeneration / (ec["CF_NG"] * 8760)
-
-    # S2.4 — gas heat input (MMBtu/yr)
-    heatInputNG = gasConstants["heatRate"] * input.annualGeneration
 
     # S2.9 — emission reductions per pollutant (short tons/yr)
     er = gasConstants["emissionRates"]
@@ -118,30 +114,28 @@ def calculateGT(input: PlantInput) -> ScenarioResult:
         CO2ChangePerYear=deltaEmissionsCO2
     )
 
-    # S2.11 — methane leak CO2 equivalent (short tons)
-    co2_offset = (
-        (heatInputNG / NG_HEAT_CONTENT)
-        * METHANE_DENSITY
-        / 1000
-        * METHANE_LEAK_RATE
-        * CH4_GWP_20YR
-        * 1.1023
-    )
+    # S2.5 — incremental TAC (new system cost minus BAU)
+    # Spreadsheet formulas (Uncontrolled_NG_Emissions, cols 53-55):
+    #   Capex = CAP_NG * cost_aj_NG * capacityGT * 1000 * annualization
+    #   O&M   = (OM_NG_FIXED * capacityGT * 1000 + OM_NG_VAR * annualGeneration) * cost_aj_NG
+    #   Fuel  = FUEL_NG * heatRate * annualGeneration * cost_aj_NG
+    tacBAU = calculateBAU(input).netBenefits.totalAnnualCost
+    capex  = CAP_NG * ec["cost_aj_NG"] * capacityGT * 1000 * ANNUALIZATION
+    om     = (OM_NG_FIXED * capacityGT * 1000 + OM_NG_VAR * input.annualGeneration) * ec["cost_aj_NG"]
+    fuel   = FUEL_NG * hr * input.annualGeneration * ec["cost_aj_NG"]
+    tacGT  = capex + om + fuel - tacBAU
 
-    # S2.12 — dollar value of methane penalty
-    methane_penalty = co2_offset * SCC_CO2
+    print(f"[GT] capacityGT: {capacityGT:.4f} MW")
+    print(f"[GT] capex:      {capex:,.2f}  (target: 2,696,797)")
+    print(f"[GT] om:         {om:,.2f}  (target: 895,144)")
+    print(f"[GT] fuel:       {fuel:,.2f}  (target: 2,846,244)")
+    print(f"[GT] tacBAU:     {tacBAU:,.2f}  (target: 22,474,283)")
+    print(f"[GT] tacGT:      {tacGT:,.2f}  (target: -16,036,097)")
 
-    # S2.5 — incremental TAC
-    tacGT = (
-        (CAP_NG * ec["cost_aj_NG"] * capacityGT * 1000 * ANNUALIZATION)
-        + (OM_NG_FIXED * ec["cost_aj_NG"] * capacityGT * 1000)
-        + (OM_NG_VAR * input.annualGeneration)
-        + (FUEL_NG * heatInputNG)
-        - tacBAU
-    )
-
-    netBenefit = calculateNetBenefits(reductions, input.state, tacGT) - methane_penalty
+    netBenefit   = calculateNetBenefits(reductions, input.state, tacGT)
     totalBenefit = netBenefit + tacGT
+
+    print(f"[GT] netBenefit: {netBenefit:,.2f}  (target: 52,294,614)")
 
     return ScenarioResult(
         scenario="GT",
@@ -156,7 +150,6 @@ def calculateGT(input: PlantInput) -> ScenarioResult:
 
 def calculateRT(input: PlantInput) -> ScenarioResult:
     ec = stateEnergyConstants[input.state]
-    tacBAU = calculateBAU(input).netBenefits.totalAnnualCost
 
     solarPct = ec["solarPct"]
     windPct  = ec["windPct"]
@@ -170,9 +163,10 @@ def calculateRT(input: PlantInput) -> ScenarioResult:
         capacitySolar = input.annualGeneration * (solarPct / totalPct) / (ec["CF_solar"] * 8760)
         capacityWind  = input.annualGeneration * (windPct  / totalPct) / (ec["CF_wind"]  * 8760)
 
+    tacBAU = calculateBAU(input).netBenefits.totalAnnualCost
     tacRT = (
         (CAP_SOLAR * ec["cost_aj_solar"] * capacitySolar * 1000
-         + CAP_WIND * ec["cost_aj_wind"] * capacityWind  * 1000) * ANNUALIZATION
+        + CAP_WIND * ec["cost_aj_wind"] * capacityWind * 1000) * ANNUALIZATION
         + (OM_SOLAR_FIXED * capacitySolar * 1000 + OM_WIND_FIXED * capacityWind * 1000)
         - tacBAU
     )
@@ -186,7 +180,7 @@ def calculateRT(input: PlantInput) -> ScenarioResult:
         CO2ChangePerYear=input.baselineCO2
     )
 
-    netBenefit = calculateNetBenefits(reductions, input.state, tacRT)
+    netBenefit   = calculateNetBenefits(reductions, input.state, tacRT)
     totalBenefit = netBenefit + tacRT
 
     return ScenarioResult(

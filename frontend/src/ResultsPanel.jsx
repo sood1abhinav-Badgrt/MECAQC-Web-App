@@ -176,7 +176,7 @@ export default function ResultsPanel({ results, plantMeta }) {
                   { label: 'Fixed O&M', value: results.bau.netBenefits.totalAnnualCost * 0.55 },
                   { label: 'Variable O&M', value: results.bau.netBenefits.totalAnnualCost * 0.14 },
                   { label: 'Fuel cost', value: results.bau.netBenefits.totalAnnualCost * 0.31 },
-                  { label: 'Total TAC', value: results.bau.netBenefits.totalAnnualCost },
+                  { label: 'Total annual cost (TAC)', value: scenario.netBenefits.totalAnnualCost, positive: scenario.netBenefits.totalAnnualCost <= 0 },
                 ].map(row => (
                   <div key={row.label} style={{ background: '#0F1117', borderRadius: 8, padding: '10px 12px' }}>
                     <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 4 }}>{row.label}</div>
@@ -245,7 +245,6 @@ export default function ResultsPanel({ results, plantMeta }) {
           <p style={{ marginTop: 14, fontSize: 11, color: '#4B5563', lineHeight: 1.6 }}>
             All costs in 2020 dollars. Source: Wu et al. 2024, ERL.
             {selected === 'ac' && ' AC cost_ctrl = $0 placeholder.'}
-            {selected === 'gt' && ' Includes methane leak penalty.'}
           </p>
         </div>
       </div>
