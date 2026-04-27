@@ -224,7 +224,7 @@ export default function ResultsPanel({ results, plantMeta }) {
           {/* Cost breakdown rows */}
           {[
             { label: 'Total health & climate benefit', value: scenario.netBenefits.totalBenefit, positive: true },
-            { label: 'Total annual cost (TAC)', value: -scenario.netBenefits.totalAnnualCost, positive: false },
+            { label: 'Total annual cost (TAC)', value: scenario.netBenefits.totalAnnualCost, positive: scenario.netBenefits.totalAnnualCost <= 0 },
             { label: 'Net benefit', value: scenario.netBenefits.netBenefit, positive: scenario.netBenefits.netBenefit >= 0 },
           ].map((row, i) => (
             <div key={i} style={{

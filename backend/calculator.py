@@ -125,13 +125,6 @@ def calculateGT(input: PlantInput) -> ScenarioResult:
     fuel   = FUEL_NG * hr * input.annualGeneration * ec["cost_aj_NG"]
     tacGT  = capex + om + fuel - tacBAU
 
-    print(f"[GT] capacityGT: {capacityGT:.4f} MW")
-    print(f"[GT] capex:      {capex:,.2f}  (target: 2,696,797)")
-    print(f"[GT] om:         {om:,.2f}  (target: 895,144)")
-    print(f"[GT] fuel:       {fuel:,.2f}  (target: 2,846,244)")
-    print(f"[GT] tacBAU:     {tacBAU:,.2f}  (target: 22,474,283)")
-    print(f"[GT] tacGT:      {tacGT:,.2f}  (target: -16,036,097)")
-
     netBenefit   = calculateNetBenefits(reductions, input.state, tacGT)
     totalBenefit = netBenefit + tacGT
 
