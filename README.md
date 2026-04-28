@@ -1,4 +1,4 @@
-DCopyMECAQC
+MECAQC
 Multi-pollutant Emissions Calculator for Air Quality and Climate
 A full-stack web application that models four regulatory transition scenarios for coal-fired power facilities, producing monetized health and climate impact estimates across multiple pollutant types. Built in collaboration with the Holloway Group at UW–Madison.
 
