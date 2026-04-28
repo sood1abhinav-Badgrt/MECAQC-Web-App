@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
 const FIELDS = [
-  { name: 'state',           label: 'State',              hint: 'Two-letter code',       placeholder: 'e.g. AL',      half: true  },
-  { name: 'capacity',        label: 'Nameplate capacity', hint: 'MW',                    placeholder: 'e.g. 403',     half: true  },
-  { name: 'heatInput',       label: 'Annual heat input',  hint: 'MMBtu/yr — from CAMPD', placeholder: 'e.g. 1598916', half: true  },
-  { name: 'annualGeneration',label: 'Annual generation',  hint: 'MWh/yr — from CAMPD',   placeholder: 'e.g. 166714',  half: true  },
-  { name: 'baselineSO2',     label: 'Baseline SO₂',       hint: 'short tons/yr',         placeholder: 'e.g. 953',     half: true  },
-  { name: 'baselineNOx',     label: 'Baseline NOₓ',       hint: 'short tons/yr',         placeholder: 'e.g. 227',     half: true  },
-  { name: 'baselinePM25',    label: 'Baseline PM₂.₅',     hint: 'short tons/yr',         placeholder: 'e.g. 71.6',    half: true  },
-  { name: 'baselineVOC',     label: 'Baseline VOC',       hint: 'short tons/yr',         placeholder: 'e.g. 4.1',     half: true  },
-  { name: 'baselineCO2',     label: 'Baseline CO₂',       hint: 'short tons/yr',         placeholder: 'e.g. 164046',  half: false },
+  { name: 'state',           label: 'State',              hint: 'Two-letter code',       placeholder: 'e.g. AL',      half: true, type: "string"},
+  { name: 'capacity',        label: 'Nameplate capacity', hint: 'MW',                    placeholder: 'e.g. 403',     half: true, type: "number"},
+  { name: 'heatInput',       label: 'Annual heat input',  hint: 'MMBtu/yr — from CAMPD', placeholder: 'e.g. 1598916', half: true, type: "number"  },
+  { name: 'annualGeneration',label: 'Annual generation',  hint: 'MWh/yr — from CAMPD',   placeholder: 'e.g. 166714',  half: true, type: "number"  },
+  { name: 'baselineSO2',     label: 'Baseline SO₂',       hint: 'short tons/yr',         placeholder: 'e.g. 953',     half: true, type: "number"  },
+  { name: 'baselineNOx',     label: 'Baseline NOₓ',       hint: 'short tons/yr',         placeholder: 'e.g. 227',     half: true, type: "number"  },
+  { name: 'baselinePM25',    label: 'Baseline PM₂.₅',     hint: 'short tons/yr',         placeholder: 'e.g. 71.6',    half: true, type: "number"  },
+  { name: 'baselineVOC',     label: 'Baseline VOC',       hint: 'short tons/yr',         placeholder: 'e.g. 4.1',     half: true, type: "number"  },
+  { name: 'baselineCO2',     label: 'Baseline CO₂',       hint: 'short tons/yr',         placeholder: 'e.g. 164046',  half: false, type: "number"},
 ];
 
 const styles = {
@@ -121,6 +121,15 @@ export default function InputForm({ setResults }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
+    for(const field in FIELDS)
+    {
+      const value = formData[field.name]
+      if(value == "")
+      {
+        
+      }  
+      
+    }
     setLoading(true);
     try {
       const response = await fetch('http://localhost:8000/scenario/run', {
