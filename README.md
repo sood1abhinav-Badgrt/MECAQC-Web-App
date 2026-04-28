@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/27176564/README.md)
 # MECAQC
 ### Multi-pollutant Emissions Calculator for Air Quality and Climate
 
@@ -132,4 +131,4 @@ Cost factors are sourced from EPA and EIA datasets and adjusted by state using r
 
 ## Acknowledgements
 
-Developed as part of the [Holloway Group](https://hollowaygroup.com) at the University of Wisconsin–Madison, a NASA-affiliated atmospheric science research lab.
+Developed as part of the [Holloway Group]([https://hollowaygroup.com](https://hollowaygroup.org/)) at the University of Wisconsin–Madison, a NASA-affiliated atmospheric science research lab. Special thanks to Dr. Xinran Wu, Dr. Tracey Holloway, and Vedaa Vandavasi.
