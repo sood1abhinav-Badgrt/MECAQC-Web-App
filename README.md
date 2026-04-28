@@ -1,7 +1,7 @@
 # MECAQC
 ### Multi-pollutant Emissions Calculator for Air Quality and Climate
 
-A full-stack web application that models four regulatory transition scenarios for coal-fired power facilities, producing monetized health and climate impact estimates across multiple pollutant types. Built in collaboration with the **Holloway Group at UW–Madison**, a NASA-affiliated atmospheric science research lab.
+A full-stack web application that models four regulatory transition scenarios for coal-fired power facilities, producing monetized health and climate impact estimates across multiple pollutant types. Developed as a member of the Holloway Group at the University of Wisconsin–Madison, a NASA-affiliated atmospheric science research lab. This application implements and operationalizes the modeling framework from Wu et al. (2024).
 
 > Based on: Wu, S., et al. (2024). Health and climate benefits of different energy transition scenarios for coal-fired power plants in the United States. *Environmental Research Letters.*
 
