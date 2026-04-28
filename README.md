@@ -131,4 +131,4 @@ Cost factors are sourced from EPA and EIA datasets and adjusted by state using r
 
 ## Acknowledgements
 
-Developed as part of the [Holloway Group]([https://hollowaygroup.org]) at the University of Wisconsin–Madison, a NASA-affiliated atmospheric science research lab. Special thanks to Dr. Xinran Wu, Dr. Tracey Holloway, and Vedaa Vandavasi.
+Developed as part of the [Holloway Group](https://hollowaygroup.org) at the University of Wisconsin–Madison, a NASA-affiliated atmospheric science research lab. Special thanks to Dr. Xinran Wu, Dr. Tracey Holloway, and Vedaa Vandavasi.
