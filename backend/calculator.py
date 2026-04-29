@@ -73,8 +73,50 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
         CO2ChangePerYear=deltaEmissionsCO2
     )
 
-    # TAC placeholder — EPA Control Cost Manual equations to be implemented
-    costControl = 0.0
+    # TAC 
+    SO2in = input.sulfurContent * 20 / input.heatRate
+    EF = .98
+    HRF = input.heatRate / 10
+    F = input.capacity * .4
+    cost_aj = stateEnergyConstants[input.state]["cost_aj_NG"]
+
+    ABScost = 584000 * (input.capacity**0.716) * (COAL_FACTOR * HRF)**0.6 * (input.sulfurContent / 2)**.02 * RETROFIT_FACTOR
+    RPECost = 202000 * (input.capacity**.716) * (input.sulfurContent * HRF)**.3
+    WHECost = 106000 * (input.capacity**.716) * (input.sulfurContent * HRF)**.45
+    BOPCost = 1070000 * (input.capacity**.716) * (input.sulfurContent * HRF)**.4
+    WWTcost = (41.36 * F + 11157588) * RETROFIT_FACTOR * .898
+
+    #TCI sub-components
+    TCI = 1.3 * (ABScost + RPECost + WHECost + BOPCost) + WWTcost
+    TCIAdjusted = TCI * cost_aj
+
+    #Consumable rates (per hour)
+    QLimestone = (17.52 * input.capacity * input.sulfurContent * HRF / 2000) * (EF/.98) #tons/hr
+    P_elec = .0112 * math.exp(0.155 * input.sulfurContent) * COAL_FACTOR * HRF * input.capacity * 1000 # kW
+    qwater = (1.674 * input.sulfurContent + 74.68) * input.capacity * COAL_FACTOR * HRF / 1000 #kgal/hr
+    qwaste = 1.811* QLimestone * (EF/.98) # tons/hr
+
+    #Direct Annual Costs(DAC)
+    maitCost = .015 * TCIAdjusted
+    OperatorCost = FT_OPERATORS_FGD * 2080 * LABOR_RATE_FGD
+    ReagentCost = QLimestone * COST_LIMESTONE * input.operatingHours
+    ElectrictyCost = P_elec * COST_ELECT_FGD * input.operatingHours
+    WaterCost = qwater * COST_WATER * input.operatingHours
+    WasteCost = qwaste * COST_WASTE * input.operatingHours
+
+    CFTotal = (input.annualGeneration / (input.capacity * 8760))
+    WasteWaterCost = (4.847 * F + 479023) * .958 * CFTotal
+    MercuryMonitor = CRF_mm * MM_COST
+
+    
+    DAC = maitCost + OperatorCost + ReagentCost + ElectricityCost + WaterCost + WasteCost + WasteWaterCost + MercuryMonitor
+
+    #Indirect Annual Costs (IDAC)
+    AdminCharges = .03 * (OperatorCost + .4 * maitCost)
+    CapRecovery  = ANNUALIZATION * TCIAdjusted
+    IDAC = AdminCharges + CapRecovery
+
+    costControl = DAC + IDAC
     tacAC = costControl + (HEAT_RATE_PENALTY * FUEL_COAL * input.heatInput)
 
     netBenefit = calculateNetBenefits(reductions, input.state, tacAC)

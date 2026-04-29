@@ -5,12 +5,14 @@ class PlantInput(BaseModel):
     capacity: int           # MW
     annualGeneration: float # MWh
     heatInput: float        # MMBtu/yr
+    sulfurContent: float    # % by weight
+    operatingHours: float   # hours/yr
     baselineSO2: float      # tons/yr
     baselineNOx: float      # tons/yr
     baselinePM25: float     # tons/yr
     baselineVOC: float      # tons/yr
     baselineCO2: float      # tons/yr
-    sulfurContent: float    # % by weight
+    
 
 class ReductionOutput(BaseModel):
     SO2ChangePerYear: float
