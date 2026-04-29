@@ -10,6 +10,7 @@ class PlantInput(BaseModel):
     baselinePM25: float     # tons/yr
     baselineVOC: float      # tons/yr
     baselineCO2: float      # tons/yr
+    sulfurContent: float    # % by weight
 
 class ReductionOutput(BaseModel):
     SO2ChangePerYear: float
