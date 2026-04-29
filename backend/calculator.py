@@ -1,5 +1,6 @@
 from mock_data import *
 from schema import *
+import math
 
 def calculateAllScenarios(input: PlantInput) -> AllScenariosResult:
     if input.state not in SUPPORTED_STATES:
@@ -74,16 +75,17 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
     )
 
     # TAC 
-    SO2in = input.sulfurContent * 20 / input.heatRate
+    hr = input.heatInput / input.annualGeneration
+    S = input.SO2Rate * (input.heatInput / input.annualGeneration) / 20
     EF = .98
-    HRF = input.heatRate / 10
+    HRF = hr / 10
     F = input.capacity * .4
     cost_aj = stateEnergyConstants[input.state]["cost_aj_NG"]
 
-    ABScost = 584000 * (input.capacity**0.716) * (COAL_FACTOR * HRF)**0.6 * (input.sulfurContent / 2)**.02 * RETROFIT_FACTOR
-    RPECost = 202000 * (input.capacity**.716) * (input.sulfurContent * HRF)**.3
-    WHECost = 106000 * (input.capacity**.716) * (input.sulfurContent * HRF)**.45
-    BOPCost = 1070000 * (input.capacity**.716) * (input.sulfurContent * HRF)**.4
+    ABScost = 584000 * (input.capacity**0.716) * (COAL_FACTOR * HRF)**0.6 * (S / 2)**.02 * RETROFIT_FACTOR
+    RPECost = 202000 * (input.capacity**.716) * (S * HRF)**.3
+    WHECost = 106000 * (input.capacity**.716) * (S * HRF)**.45
+    BOPCost = 1070000 * (input.capacity**.716) * (S * HRF)**.4
     WWTcost = (41.36 * F + 11157588) * RETROFIT_FACTOR * .898
 
     #TCI sub-components
@@ -91,16 +93,16 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
     TCIAdjusted = TCI * cost_aj
 
     #Consumable rates (per hour)
-    QLimestone = (17.52 * input.capacity * input.sulfurContent * HRF / 2000) * (EF/.98) #tons/hr
-    P_elec = .0112 * math.exp(0.155 * input.sulfurContent) * COAL_FACTOR * HRF * input.capacity * 1000 # kW
-    qwater = (1.674 * input.sulfurContent + 74.68) * input.capacity * COAL_FACTOR * HRF / 1000 #kgal/hr
+    QLimestone = (17.52 * input.capacity * S * HRF / 2000) * (EF/.98) #tons/hr
+    P_elec = .0112 * math.exp(0.155 * S) * COAL_FACTOR * HRF * input.capacity * 1000 # kW
+    qwater = (1.674 * S + 74.68) * input.capacity * COAL_FACTOR * HRF / 1000 #kgal/hr
     qwaste = 1.811* QLimestone * (EF/.98) # tons/hr
 
     #Direct Annual Costs(DAC)
     maitCost = .015 * TCIAdjusted
     OperatorCost = FT_OPERATORS_FGD * 2080 * LABOR_RATE_FGD
     ReagentCost = QLimestone * COST_LIMESTONE * input.operatingHours
-    ElectrictyCost = P_elec * COST_ELECT_FGD * input.operatingHours
+    ElectricityCost = P_elec * COST_ELECT_FGD * input.operatingHours
     WaterCost = qwater * COST_WATER * input.operatingHours
     WasteCost = qwaste * COST_WASTE * input.operatingHours
 
@@ -113,7 +115,8 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
 
     #Indirect Annual Costs (IDAC)
     AdminCharges = .03 * (OperatorCost + .4 * maitCost)
-    CapRecovery  = ANNUALIZATION * TCIAdjusted
+    CRF_FGD = 0.0325 * (1.0325**30) / ((1.0325**30) - 1)  # 3.25%, 30 years ≈ 0.0527
+    CapRecovery = CRF_FGD * TCIAdjusted
     IDAC = AdminCharges + CapRecovery
 
     costControl = DAC + IDAC
