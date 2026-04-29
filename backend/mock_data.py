@@ -127,18 +127,18 @@ controlConstants = {
 }
 
 # ── AC scrubber capital and O&M ───────────────────────────────────────────────
-# Source: EPA Control Cost Manual — not in SI_XW_2020.pdf
-# Placeholder until Control Cost Manual equations are implemented
-
-CAP_SCRUBBER = {
-    "wetFGD": 700,   # $/kW
-    "SDA":    350    # $/kW
-}
-
-OM_SCRUBBER_FIXED = {
-    "wetFGD": 22,    # $/kW/yr
-    "SDA":    14     # $/kw/yr
-}
+# Source: EPA Control Cost Manual — not in SI_XW_2024.pdf
+COST_LIMESTONE   = 30.0      # $/ton
+COST_WATER       = 0.0042    # $/gallon
+COST_ELECT_FGD   = 0.0361    # $/kWh
+COST_WASTE       = 30.0      # $/ton
+LABOR_RATE_FGD   = 60.0      # $/hour
+FT_OPERATORS_FGD = 12        # full-time operators for WFGD
+MM_COST          = 100000    # $/mercury monitor
+EQUIP_LIFE_MM    = 6         # years (mercury monitor replacement cycle)
+COAL_FACTOR      = 1.0       # bituminous
+RETROFIT_FACTOR  = 1.0       # average difficulty
+CRF_mm = 0.07 / (1 - (1.07 ** - EQUIP_LIFE_MM))
 
 # ── BPT values — Table S2.5 ──────────────────────────────────────────────────
 # SO2:  health benefits from secondary PM2.5 (SO2 as precursor)
