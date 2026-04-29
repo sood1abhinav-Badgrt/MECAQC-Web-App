@@ -147,7 +147,6 @@ export default function ResultsPanel({ results, plantMeta }) {
                   borderRadius: 4, background: '#78350F22', color: '#F59E0B',
                   display: 'inline-block',
                 }}>
-                  cost_ctrl = $0
                 </div>
               )}
             </button>

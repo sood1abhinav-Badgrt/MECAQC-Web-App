@@ -85,12 +85,12 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
     ABScost = 584000 * (input.capacity**0.716) * (COAL_FACTOR * HRF)**0.6 * (S / 2)**.02 * RETROFIT_FACTOR
     RPECost = 202000 * (input.capacity**.716) * (S * HRF)**.3
     WHECost = 106000 * (input.capacity**.716) * (S * HRF)**.45
-    BOPCost = 1070000 * (input.capacity**.716) * (S * HRF)**.4
+    BOPCost = 1070000 * (input.capacity**0.716) * (COAL_FACTOR * HRF)**0.4 * RETROFIT_FACTOR
     WWTcost = (41.36 * F + 11157588) * RETROFIT_FACTOR * .898
 
     #TCI sub-components
     TCI = 1.3 * (ABScost + RPECost + WHECost + BOPCost) + WWTcost
-    TCIAdjusted = TCI * cost_aj
+    TCIAdjusted = TCI
 
     #Consumable rates (per hour)
     QLimestone = (17.52 * input.capacity * S * HRF / 2000) * (EF/.98) #tons/hr
@@ -99,11 +99,11 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
     qwaste = 1.811* QLimestone * (EF/.98) # tons/hr
 
     #Direct Annual Costs(DAC)
-    maitCost = .015 * TCIAdjusted
-    OperatorCost = FT_OPERATORS_FGD * 2080 * LABOR_RATE_FGD
+    maitCost = .015 * TCIAdjusted * cost_aj
+    OperatorCost = FT_OPERATORS_FGD * 2080 * LABOR_RATE_FGD * cost_aj
     ReagentCost = QLimestone * COST_LIMESTONE * input.operatingHours
     ElectricityCost = P_elec * COST_ELECT_FGD * input.operatingHours
-    WaterCost = qwater * COST_WATER * input.operatingHours
+    WaterCost = qwater * COST_WATER * 1000 * input.operatingHours
     WasteCost = qwaste * COST_WASTE * input.operatingHours
 
     CFTotal = (input.annualGeneration / (input.capacity * 8760))
@@ -115,7 +115,7 @@ def calculateAC(input: PlantInput) -> ScenarioResult:
 
     #Indirect Annual Costs (IDAC)
     AdminCharges = .03 * (OperatorCost + .4 * maitCost)
-    CRF_FGD = 0.0325 * (1.0325**30) / ((1.0325**30) - 1)  # 3.25%, 30 years ≈ 0.0527
+    CRF_FGD = 0.0325 * (1.0325**20) / ((1.0325**20) - 1)  # 3.25%, 30 years ≈ 0.0527
     CapRecovery = CRF_FGD * TCIAdjusted
     IDAC = AdminCharges + CapRecovery
 
