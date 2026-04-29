@@ -5,11 +5,15 @@ const FIELDS = [
   { name: 'capacity',        label: 'Nameplate capacity', hint: 'MW',                    placeholder: 'e.g. 403',     half: true, type: "number"},
   { name: 'heatInput',       label: 'Annual heat input',  hint: 'MMBtu/yr — from CAMPD', placeholder: 'e.g. 1598916', half: true, type: "number"  },
   { name: 'annualGeneration',label: 'Annual generation',  hint: 'MWh/yr — from CAMPD',   placeholder: 'e.g. 166714',  half: true, type: "number"  },
+  { name: 'SulfurContent',     label: 'Sulfur Content',   hint: '% by weight',         placeholder: 'e.g. 1.84',  half: true, type: "number"},
+  { name: 'OperatingHours',     label: 'Operating Hours', hint: 'hours/yr',         placeholder: 'e.g. 910',  half: true, type: "number"},
   { name: 'baselineSO2',     label: 'Baseline SO₂',       hint: 'short tons/yr',         placeholder: 'e.g. 953',     half: true, type: "number"  },
   { name: 'baselineNOx',     label: 'Baseline NOₓ',       hint: 'short tons/yr',         placeholder: 'e.g. 227',     half: true, type: "number"  },
   { name: 'baselinePM25',    label: 'Baseline PM₂.₅',     hint: 'short tons/yr',         placeholder: 'e.g. 71.6',    half: true, type: "number"  },
   { name: 'baselineVOC',     label: 'Baseline VOC',       hint: 'short tons/yr',         placeholder: 'e.g. 4.1',     half: true, type: "number"  },
+  
   { name: 'baselineCO2',     label: 'Baseline CO₂',       hint: 'short tons/yr',         placeholder: 'e.g. 164046',  half: false, type: "number"},
+
 ];
 
 const styles = {
