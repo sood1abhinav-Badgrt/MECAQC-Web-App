@@ -121,12 +121,13 @@ export default function InputForm({ setResults }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    for(const field in FIELDS)
+    for(const field of FIELDS)
     {
       const value = formData[field.name]
-      if(value == "")
+      if(value == "" || (field.type == "number" && Number.isFinite(Number(value)) == false))
       {
-        
+        setError("Please fill in all fields with valid numbers.")
+        return;
       }  
       
     }
