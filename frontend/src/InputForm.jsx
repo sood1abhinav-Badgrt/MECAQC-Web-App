@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const FIELDS = [
   { name: 'state',           label: 'State',              hint: 'Two-letter code',       placeholder: 'e.g. AL',      half: true, type: "string"},
   { name: 'capacity',        label: 'Nameplate capacity', hint: 'MW',                    placeholder: 'e.g. 403',     half: true, type: "number"},
@@ -137,7 +139,7 @@ export default function InputForm({ setResults }) {
     }
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/scenario/run', {
+      const response = await fetch(API_URL+'scenario/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
