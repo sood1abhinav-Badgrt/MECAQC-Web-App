@@ -139,7 +139,7 @@ export default function InputForm({ setResults }) {
     }
     setLoading(true);
     try {
-      const response = await fetch(API_URL+'scenario/run', {
+      const response = await fetch(API_URL+'/scenario/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
