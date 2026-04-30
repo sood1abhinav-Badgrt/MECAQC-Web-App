@@ -105,8 +105,8 @@ const styles = {
 
 export default function InputForm({ setResults }) {
   const [formData, setFormData] = useState({
-    state: '', capacity: '', annualGeneration: '', heatInput: '',
-    baselineSO2: '', baselineNOx: '', baselinePM25: '', baselineVOC: '', baselineCO2: '',
+    state: 'AL', capacity: '403', annualGeneration: '166714', heatInput: '1598916', SO2Rate: '1.10', operatingHours: '910',
+    baselineSO2: '953', baselineNOx: '227', baselinePM25: '71.6', baselineVOC: '4.1', baselineCO2: '164046',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -118,7 +118,7 @@ export default function InputForm({ setResults }) {
 
   function handleReset() {
     setFormData({
-      state: '', capacity: '', annualGeneration: '', heatInput: '',
+      state: '', capacity: '', annualGeneration: '', heatInput: '', SO2Rate: '', operatingHours: '',
       baselineSO2: '', baselineNOx: '', baselinePM25: '', baselineVOC: '', baselineCO2: '',
     });
     setError('');
